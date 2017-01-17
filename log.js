@@ -1,3 +1,16 @@
+/*
+  ユーザー設定項目
+*/
+
+
+  var token = "" // ご自身のトークンをセットしてください
+
+
+/*
+  以下コード
+*/
+
+
 const GitHub = require('github');
 
 const github = new GitHub({
@@ -38,7 +51,7 @@ for (var i = 2; i < process.argv.length; i++){
 
 github.authenticate({
   type: 'token',
-  token: '' // ご自身のトークンをセットしてください
+  token: token
 })
 function start() {
   github.activity.getEvents({
