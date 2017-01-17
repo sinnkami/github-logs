@@ -6,6 +6,7 @@
 
 ## 使い方
   1. nodeを入れる
+  2. ```npm install```
   2. ```node log.js```
 
 ### 引数   
