@@ -4,16 +4,52 @@ const github = new GitHub({
   debug: false,
   Promise: require('bluebird')
 });
+var through = [];
+for (var i = 2; i < process.argv.length; i++){
+  switch (process.argv[i]) {
+    case "push":
+      through.push("PushEvent");
+      break;
+    case "watch":
+      through.push("WatchEvent");
+      break;
+    case "pullrequest":
+      through.push("PullRequestEvent");
+      through.push("PullRequestReviewCommentEvent");
+      break;
+    case "issue":
+      through.push("IssuesEvent");
+      through.push("IssueCommentEvent");
+      break;
+    case "create":
+      through.push("CreateEvent");
+      break;
+    case "public":
+      through.push("PublicEvent");
+      break;
+    case "gollum":
+      through.push("GollumEvent");
+      break;
+    case "fork":
+      through.push("ForkEvent");
+      break;
+  }
+}
 
 github.authenticate({
   type: 'token',
-  token: ''// ご自身のトークンを入力してください
+  token: '' // ご自身のトークンをセットしてください
 })
 function start() {
   github.activity.getEvents({
     per_page: 1
   }).then(function (res) {
-    for (var i = 0; i < res.length; i++){
+    set: for (var i = 0; i < res.length; i++){
+      for (var j = 0; j < through.length; j++){
+        if (through[j] !== res[i].type) {
+          break set;
+        }
+      }
       switch (res[i].type) {
         case "PushEvent":
           console.log("  id: " + res[i].id);
@@ -56,6 +92,7 @@ function start() {
         case "CreateEvent":
           if (res[i].payload.ref_type === "tag") {
             // 設定していません
+            break set;
           }else if (res[i].payload.ref_type === "branch") {
             console.log("  id: " + res[i].id);
             console.log("時刻: " + res[i].created_at);
